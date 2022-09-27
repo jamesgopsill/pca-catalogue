@@ -58,7 +58,7 @@ function parseCatalogue(toParse){
 async function getCatalogue() {
 	let rawCat
 	const response = await fetch('http://localhost:8000/docs/Adjusted_contents.csv')
-
+	mode: 'cors'
 	rawCat = await response.text()
 
 	// await parseCatalogue(rawCat, 37)
