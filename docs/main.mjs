@@ -45,9 +45,10 @@ function parseCatalogue(toParse){
 		rows[i] = {
 			id: i,
 			name: currentInnovation[0],
-			Description: currentInnovation[1],
-			TRL: currentInnovation[2],
-			Tags: currentInnovation[3],
+			Description: currentInnovation[2].replace(/["]+/g, ''),
+			TRL: currentInnovation[3],
+			Tags: currentInnovation[4].replace(/["]+/g, ''),
+			link: currentInnovation[1],
 			inView: true
 		}
 
@@ -57,8 +58,8 @@ function parseCatalogue(toParse){
 
 async function getCatalogue() {
 	let rawCat
-	const response = await fetch('http://localhost:8000/docs/Adjusted_contents.csv')
-	mode: 'cors'
+	const response = await fetch('./Link_catalogue.csv')
+	// mode: 'cors'`
 	rawCat = await response.text()
 
 	// await parseCatalogue(rawCat, 37)
@@ -76,6 +77,8 @@ getCatalogue();
 
 const btn = document.getElementById("search-btn")
 const searchInput = document.getElementById("search-term")
+const selectInput = document.getElementById("selectInput")
+var currentVal = 5
 
 const updateTable = () => {
 
@@ -91,6 +94,7 @@ const updateTable = () => {
 			html += `<td>${row.Description}</td>`
 			html += `<td>${row.TRL}</td>`
 			html += `<td>${row.Tags}</td>`
+			html += `<td>${row.link}</td>`
 			html += `</tr>`
 		}
 	}
@@ -104,7 +108,7 @@ const onSearch = () => {
 	for (let j = 1; j < rows.length; j++) {
 		// const flag = row.last.includes(searchTerm)
 		console.log(rows[j])
-		const flag = rows[j].Tags.includes(searchTerm)
+		const flag = rows[j].Tags.includes(searchTerm) && rows[j].TRL > currentVal
 
 		console.log(flag, rows[j])
 		if (flag) {
@@ -125,5 +129,27 @@ searchInput.addEventListener("keyup", function(event) {
 		onSearch()
     }
 })
+
+selectInput.addEventListener("input", function(event){
+	console.log(event)
+	currentVal = selectInput.value
+	console.log(currentVal)
+	document.getElementById('output').innerHTML = currentVal
+}
+)
+selectInput.addEventListener("input", () => {
+	setBubble(range, bubble);
+}
+)
+function setBubble(selectInput, bubble) {
+	// var val = selectInput.value;
+	const min = selectInput.min ? selectInput.min : 0;
+	const max = selectInput.max ? selectInput.max : 100;
+	const newVal = Number(((currentVal - min) * 100) / (max - min));
+	bubble.innerHTML = currentVal;
+  
+	// Sorta magic numbers based on size of the native UI thumb
+	bubble.style.left = newVal = "%";
+  }
 
 updateTable();

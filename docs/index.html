@@ -17,7 +17,7 @@
 	</header>
 
 	<div class="container-sm">
-		<p>Some text describing the project and the purpose of the DB.</p>
+		<p>This database contains examples of open source products created in response to the Covid-19 pandemic. These products were compiled from various place, the locations can be accessed via the hyperlink in each entry.</p>
 		<hr />
 	</div>
 
@@ -28,8 +28,8 @@
 			<input 
 				type="text" 
 				class="form-control" 
-				placeholder="Search"
-				aria-label="Search"
+				placeholder="Search tags"
+				aria-label="Search tags"
 				aria-describedby="search-btn"
 				id="search-term"
 			>
@@ -41,15 +41,32 @@
 		</div>
 	</div>
 
+	<div class="container">
+		<label for="selectInput" class="pull-left">Showing results with TRL level greater than </label>
+
+		<output id="output">5</output>
+
+		<!-- Filter by TRL: <b> 1</b> <input data-slider-id="selectInput" type="range" class="span2" value="50" data-slider-min="1" data-slider-max="9" data-slider-step="1"/> <b> 9</b> -->
+		<!-- <label for="customRange3" class="form-label">Filter by TRL</label> -->
+		<!-- <label for="" class="pull-right">9</label> -->
+		<!-- <b>1</b> -->
+		<input type="range" class="form-range" min="1" max="9" step="1" id="selectInput">	
+		<!-- <b>9</b> -->
+	</div>
+
+
+
+
 	<div class="container-sm">
 		<table class="table table-hover">
 			<thead class="table-info">
-				<tr>
+				<tr class="clickable-row" data-href="https://getbootstrap.com/docs/5.0/content/tables/">
 					<th scope="col">#</th>
 					<th scope="col">Name</th>
 					<th scope="col">Description</th>
 					<th scope="col">TRL</th>
 					<th scope="col">Tags</th>
+					<th scope="col">link</th>
 				</tr>
 			</thead>
 			<tbody id="table-data">
