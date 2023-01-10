@@ -31,11 +31,13 @@
 		>Search</button>
 	</div>
 
-	<label for="selectInput" class="pull-left">Showing results with TRL level greater than </label>
 
-	<output id="trl-value">1</output>
+	<div class="input-group mb-3">
+		<label for="selectInput" class="pull-left">Technology Readiness Level (TRL)</label>
+		<input type="range" class="form-range" min="1" max="9" step="1" id="slider">
+	</div>	
 
-	<input type="range" class="form-range" min="1" max="9" step="1" id="slider">	
+	<p>Showing results <span id="results"></span> matching the tags to the search term and having a Technology Readiness Level (TRL) greater than <span id="trl-value"></span>.</p>
 
 	<table class="table table-hover table-sm">
 		<thead class="table-info">

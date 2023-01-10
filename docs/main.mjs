@@ -3,6 +3,7 @@ let tableData = []
 const updateTable = () => {
 	const table = document.getElementById("table-data")
 	let html = ``
+	let n = 0
 	for (const row of tableData) {
 		if (row.inView) {
 			html += `<tr>`
@@ -11,9 +12,11 @@ const updateTable = () => {
 			html += `<td>${row.trl}</td>`
 			html += `<td>${row.tags}</td>`
 			html += `</tr>`
+			n++
 		}
 	}
 	table.innerHTML = html
+	document.getElementById("results").innerHTML = n
 }
 
 const initCatalogue = async () => {
@@ -65,6 +68,7 @@ const btn = document.getElementById("search-btn")
 const searchInput = document.getElementById("search-term")
 const sliderInput = document.getElementById("slider")
 sliderInput.value = 1
+document.getElementById("trl-value").innerHTML = sliderInput.value
 
 btn.addEventListener("click", onSearch)
 searchInput.addEventListener("keyup", function(event) {
