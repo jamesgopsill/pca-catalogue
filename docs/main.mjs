@@ -32,6 +32,7 @@ let rows = [
 	{}
 
 ]
+var currentVal = 5
 
 function parseCatalogue(toParse){
 	const firstSplit = toParse.split(/\r?\n/);
@@ -51,9 +52,13 @@ function parseCatalogue(toParse){
 			link: currentInnovation[1],
 			inView: true
 		}
-
+		if (rows[i].TRL < currentVal){
+		rows[i].inView = false
+		}
+	
 
 	}
+
 }
 
 async function getCatalogue() {
@@ -78,7 +83,6 @@ getCatalogue();
 const btn = document.getElementById("search-btn")
 const searchInput = document.getElementById("search-term")
 const selectInput = document.getElementById("selectInput")
-var currentVal = 5
 
 const updateTable = () => {
 
@@ -108,7 +112,7 @@ const onSearch = () => {
 	for (let j = 1; j < rows.length; j++) {
 		// const flag = row.last.includes(searchTerm)
 		console.log(rows[j])
-		const flag = rows[j].Tags.includes(searchTerm) && rows[j].TRL > currentVal
+		var flag = rows[j].Tags.includes(searchTerm) && rows[j].TRL > currentVal
 
 		console.log(flag, rows[j])
 		if (flag) {
