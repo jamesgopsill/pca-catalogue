@@ -1,132 +1,71 @@
-console.log("Hello World");
-
-let rows = [
-	// {
-	// 	id: 1,
-	// 	first: "Machine",
-	// 	last: "One",
-	// 	handle: "Some URL",
-	// 	inView: true
-	// },
-	// {
-	// 	id: 2,
-	// 	first: "Machine",
-	// 	last: "Two",
-	// 	handle: "Some URL",
-	// 	inView: true
-	// },
-	// {
-	// 	id: 3,
-	// 	first: "Machine",
-	// 	last: "Three",
-	// 	handle: "Some URL",
-	// 	inView: true
-	// },
-	// {
-	// 	id: 4,
-	// 	first: "Tester",
-	// 	last: " Four",
-	// 	handle: "Some URL",
-	// 	inView: true
-	// }
-	{}
-
-]
-var currentVal = 5
-
-function parseCatalogue(toParse){
-	const firstSplit = toParse.split(/\r?\n/);
-	// console.log(firstSplit)
-	const numRows = firstSplit.length;
-
-	for (let i = 1; i < numRows; i++){
-		// let currentInnovation = firstSplit[i].split(',');
-		let currentInnovation = firstSplit[i].match(/("[^"]*")|[^,]+/g);
-		console.log(currentInnovation)
-		rows[i] = {
-			id: i,
-			name: currentInnovation[0],
-			Description: currentInnovation[2].replace(/["]+/g, ''),
-			TRL: currentInnovation[3],
-			Tags: currentInnovation[4].replace(/["]+/g, ''),
-			link: currentInnovation[1],
-			inView: true
-		}
-		if (rows[i].TRL < currentVal){
-		rows[i].inView = false
-		}
-	
-
-	}
-
-}
-
-async function getCatalogue() {
-	let rawCat
-	const response = await fetch('./Link_catalogue.csv')
-	// mode: 'cors'`
-	rawCat = await response.text()
-
-	// await parseCatalogue(rawCat, 37)
-
-	// updateTable()
-	return rawCat
-}
-
-console.log(parseCatalogue(await getCatalogue(), 37));
-getCatalogue();
-
-
-
-
-
-const btn = document.getElementById("search-btn")
-const searchInput = document.getElementById("search-term")
-const selectInput = document.getElementById("selectInput")
+let tableData = []
 
 const updateTable = () => {
-
 	const table = document.getElementById("table-data")
-	console.log(table)
-
 	let html = ``
-	for (const row of rows) {
+	for (const row of tableData) {
 		if (row.inView) {
 			html += `<tr>`
-			html += `<td>${row.id}</td>`
-			html += `<td>${row.name}</td>`
-			html += `<td>${row.Description}</td>`
-			html += `<td>${row.TRL}</td>`
-			html += `<td>${row.Tags}</td>`
-			html += `<td>${row.link}</td>`
+			html += `<td><a href="${row.link}">${row.name}</a></td>`
+			html += `<td>${row.description}</td>`
+			html += `<td>${row.trl}</td>`
+			html += `<td>${row.tags}</td>`
 			html += `</tr>`
 		}
 	}
 	table.innerHTML = html
 }
 
-const onSearch = () => {
-	console.log("Search")
-	const searchTerm = searchInput.value
-	console.log(searchTerm)
-	for (let j = 1; j < rows.length; j++) {
-		// const flag = row.last.includes(searchTerm)
-		console.log(rows[j])
-		var flag = rows[j].Tags.includes(searchTerm) && rows[j].TRL > currentVal
+const initCatalogue = async () => {
+	const res = await fetch("./catalogue.csv")
+	if (res.ok) {
+		const data = await res.text()
+		const rows = data.split(/\r?\n/)
+		rows.shift()
+		for (const row of rows) {
+			const els = row.match(/("[^"]*")|[^,]+/g)
+			tableData.push({
+				name: els[0],
+				description: els[2].replace(/["]+/g, ""),
+				trl: els[3],
+				tags: els[4].replace(/["]+/g, "").replaceAll(",", ", "),
+				link: els[1],
+				inView: true
+			})
+		}
+	}
+	updateTable()
+}
 
-		console.log(flag, rows[j])
+const onSearch = () => {
+	const searchTerm = searchInput.value
+	for (let row of tableData) {
+		let flag = true
+		if (!row.tags.includes(searchTerm)) {
+			flag = false
+		}
+		if (row.trl < sliderInput.value) {
+			flag = false
+		}
 		if (flag) {
-			console.log(rows[j])
-			rows[j].inView = true
+			row.inView = true
 		} else {
-			rows[j].inView = false
+			row.inView = false
 		}
 	}
 	updateTable()
 }
 
 
-// Add listeners
+// Start
+
+initCatalogue()
+
+const btn = document.getElementById("search-btn")
+const searchInput = document.getElementById("search-term")
+const sliderInput = document.getElementById("slider")
+sliderInput.value = 1
+
 btn.addEventListener("click", onSearch)
 searchInput.addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
@@ -134,26 +73,7 @@ searchInput.addEventListener("keyup", function(event) {
     }
 })
 
-selectInput.addEventListener("input", function(event){
-	console.log(event)
-	currentVal = selectInput.value
-	console.log(currentVal)
-	document.getElementById('output').innerHTML = currentVal
-}
-)
-selectInput.addEventListener("input", () => {
-	setBubble(range, bubble);
-}
-)
-function setBubble(selectInput, bubble) {
-	// var val = selectInput.value;
-	const min = selectInput.min ? selectInput.min : 0;
-	const max = selectInput.max ? selectInput.max : 100;
-	const newVal = Number(((currentVal - min) * 100) / (max - min));
-	bubble.innerHTML = currentVal;
-  
-	// Sorta magic numbers based on size of the native UI thumb
-	bubble.style.left = newVal = "%";
-  }
-
-updateTable();
+sliderInput.addEventListener("input", function(_) {
+	document.getElementById("trl-value").innerHTML = sliderInput.value
+	onSearch()
+})
